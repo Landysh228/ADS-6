@@ -6,49 +6,69 @@ template<typename T>
 class TPQueue {
  private:
   struct Node {
-    T data;
-    Node * next;
-    explicit Node(const T& value) : data(value), next(nullptr) {}
+    T vall;
+    Node* next;
   };
+
   Node* head;
+
  public:
-  TPQueue() : head(nullptr) {}
+  TPQueue() {
+    head = nullptr;
+  }
+
   ~TPQueue() {
-    while (head) {
+    while (head != nullptr) {
       Node* tmp = head;
-      head = head -> next;
+      head = head->next;
       delete tmp;
     }
   }
-  TPQueue(const TPQueue&) = delete;
-  TPQueue& operator = (const TPQueue&) = delete;
-  void push(const T& value) {
-    Node * newNode = new Node(value);
-    if (!head || value.prior > head->data.prior) {
-      newNode -> next = head;
-      head = newNode;
-    } else {
-      Node * curt = head;
-      while (curt -> next && curt -> next -> data.prior >= value.prior) {
-        curt = curt -> next;
-      }
-      newNode -> next = curt -> next;
-      curt -> next = newNode;
+
+  void push(T x) {
+    Node* n = new Node;
+    n->vall = x;
+    n->next = nullptr;
+
+    if (head == nullptr || x.prior > head->vall.prior) {
+      n->next = head;
+      head = n;
+      return;
     }
+
+    Node* cur = head;
+
+    while (cur->next != nullptr &&
+           cur->next->vall.prior >= x.prior) {
+      cur = cur->next;
+    }
+
+    n->next = cur->next;
+    cur->next = n;
   }
+
   T pop() {
-    if (!head) {
-      throw "Queue is empty";
+    if (head == nullptr) {
+      return T{};
     }
-    Node * tmp = head;
-    T rslt = head -> data;
-    head = head -> next;
+
+    Node* tmp = head;
+    T res = head->vall;
+
+    head = head->next;
     delete tmp;
-    return rslt;
+
+    return res;
+  }
+
+  bool isEmpty() {
+    return head == nullptr;
   }
 };
+
 struct SYM {
   char ch;
   int prior;
 };
+
 #endif  // INCLUDE_TPQUEUE_H_
